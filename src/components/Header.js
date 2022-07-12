@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { getUser } from '../services/userAPI';
-import Loading from '../pages/Loading';
 
 class Header extends React.Component {
   constructor() {
     super();
     this.state = {
       loginName: '',
+      loading: true,
     };
   }
 
@@ -15,10 +15,11 @@ class Header extends React.Component {
     this.userName();
   }
 
-  userName= async () => {
+  userName = async () => {
     const user = await getUser();
     this.setState({
       loginName: user,
+      loading: false,
     });
   }
 
@@ -27,16 +28,12 @@ class Header extends React.Component {
     // console.log(loginName, loading);
     return (
       <header data-testid="header-component">
-        {(loading) ? (
-          <Loading />
-        ) : (
-          <h1 data-testid="header-user-name">{loginName}</h1>
-        )}
-
-        <Link to="/search"> Search </Link>
+        {loading ? <div>Carregando...</div>
+          : <h1 data-testid="header-user-name">{loginName.name}</h1>}
+        <Link data-testid="link-to-search" to="/search"> Search </Link>
         <Link to="/album/:id"> Album </Link>
-        <Link to="favorites"> Favorites </Link>
-        <Link to="/profile"> Profile </Link>
+        <Link data-testid="link-to-favorites" to="/favorites"> Favorites </Link>
+        <Link data-testid="link-to-profile" to="/profile"> Profile </Link>
         <Link to="profile/edit"> Profile Edit </Link>
       </header>
     );
