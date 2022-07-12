@@ -31,7 +31,6 @@ typeLogin = (event) => {
 pushProp = () => {
   const { history } = this.props;
   history.push('/search');
-  console.log(this.props);
 }
 
 userCreate = async (event) => {
