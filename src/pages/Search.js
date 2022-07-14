@@ -1,5 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
+import searchAlbumsAPI from '../services/searchAlbumsAPI';
 
 class Search extends React.Component {
   constructor() {
@@ -7,6 +9,8 @@ class Search extends React.Component {
     this.state = {
       artistName: '',
       button: true,
+      album: [],
+      searchedArtist: '',
     };
   }
 
@@ -19,18 +23,28 @@ class Search extends React.Component {
   }
 
   typeArtist = (event) => {
-    const { artistName } = this.state;
-    console.log('oi', artistName);
     const { name, value } = event.target;
     this.setState({
       [name]: value,
     }, () => this.artistButton());
   }
 
+  user = async (event) => {
+    event.preventDefault();
+    const { artistName } = this.state;
+    const albumApi = await searchAlbumsAPI(artistName);
+
+    this.setState((prevState) => ({
+      album: albumApi,
+      artistName: '',
+      searchedArtist: prevState.artistName,
+    }));
+  }
+
   render() {
-    const { artistName, button } = this.state;
+    const { artistName, button, album, searchedArtist } = this.state;
     return (
-      <>
+      <div data-testid="page-search">
         <form>
           <input
             onChange={ this.typeArtist }
@@ -44,15 +58,48 @@ class Search extends React.Component {
             disabled={ button }
             data-testid="search-artist-button"
             type="button"
-            onClick={ this.artistButton }
+            onClick={ this.user }
           >
             Pesquisar
 
           </button>
         </form>
         <Header />
-        <div data-testid="page-search" />
-      </>
+        {(searchedArtist.length !== 0) && (
+          <h2>
+            Resultado de álbuns de:
+            {` ${searchedArtist}` }
+          </h2>
+        )}
+        {album.length === 0 ? <div>Nenhum álbum foi encontrado</div> : (
+          album.map((element, index) => {
+            const {
+              artistName: name,
+              collectionName,
+              collectionPrice,
+              collectionId,
+              artworkUrl100 } = element;
+            return (
+
+              <div key={ index }>
+                <h3>{ name }</h3>
+                <p>{ collectionPrice }</p>
+                <p>{ collectionName }</p>
+                <img
+                  src={ artworkUrl100 }
+                  alt="capa"
+                />
+                <Link
+                  data-testid={ `link-to-album-${collectionId}` }
+                  to={ `/album/${collectionId}` }
+                >
+                  Veja mais...
+                </Link>
+              </div>
+            );
+          })
+        ) }
+      </div>
     );
   }
 }
