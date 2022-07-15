@@ -50,9 +50,9 @@ class MusicCard extends React.Component {
     });
   };
 
-  checkFavorite(event) {
-    const { savedFavoritesSongs } = this.state;
-  }
+  // checkFavorite(event) {
+  //   const { savedFavoritesSongs } = this.state;
+  // }
 
   render() {
     const { loading, isChecked } = this.state;
