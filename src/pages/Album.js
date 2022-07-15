@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import getMusics from '../services/musicsAPI';
 import MusicCard from '../components/MusicCard';
+import { getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 class Album extends React.Component {
   constructor() {
     super();
     this.state = ({
       musics: [],
+      favorites: [],
     });
   }
 
@@ -25,9 +27,16 @@ class Album extends React.Component {
     });
   }
 
-  render() {
-    const { musics } = this.state;
+  getFavorites = async () => {
+    const favorites = await getFavoriteSongs();
+    this.setState({
+      favorites,
+    });
+  }
 
+  render() {
+    const { musics, favorites } = this.state;
+    console.log(favorites);
     return (
       <>
         <Header />
@@ -56,7 +65,7 @@ class Album extends React.Component {
                     <code>audio</code>
                     .
                   </audio>
-                  <MusicCard musics={ music } />
+                  <MusicCard musics={ music } getFavorites={ this.getFavorites } />
                 </div>
               );
             })}

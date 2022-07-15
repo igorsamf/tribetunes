@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
+import MusicCard from '../components/MusicCard';
 import { getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 class Favorites extends React.Component {
@@ -44,6 +45,7 @@ class Favorites extends React.Component {
                     <code>audio</code>
                     .
                   </audio>
+                  <MusicCard musics={ song } getFavorites={ this.getFavorites } />
                 </div>
               );
             })

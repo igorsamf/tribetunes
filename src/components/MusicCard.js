@@ -30,7 +30,7 @@ class MusicCard extends React.Component {
   }
 
   musicsApi = async (event) => {
-    const { musics } = this.props;
+    const { musics, getFavorites } = this.props;
     const { checked } = event.target;
     const magicNumber = 500;
     this.setState({
@@ -47,12 +47,9 @@ class MusicCard extends React.Component {
           loading: false,
         });
       }, magicNumber);
+      getFavorites();
     });
   };
-
-  // checkFavorite(event) {
-  //   const { savedFavoritesSongs } = this.state;
-  // }
 
   render() {
     const { loading, isChecked } = this.state;
