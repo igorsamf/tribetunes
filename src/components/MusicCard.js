@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   addSong,
-  // getFavoriteSongs,
+  getFavoriteSongs,
   removeSong,
 } from '../services/favoriteSongsAPI';
 import Loading from '../pages/Loading';
@@ -12,7 +12,21 @@ class MusicCard extends React.Component {
     super();
     this.state = {
       loading: false,
+      isChecked: false,
     };
+  }
+
+  componentDidMount() {
+    this.update();
+  }
+
+  update = async () => {
+    const { musics } = this.props;
+    const favorites = await getFavoriteSongs();
+    const result = favorites.some((music) => musics.trackId === music.trackId);
+    this.setState({
+      isChecked: result,
+    });
   }
 
   musicsApi = async (event) => {
@@ -27,6 +41,7 @@ class MusicCard extends React.Component {
       } else {
         removeSong(musics);
       }
+      this.update();
       setTimeout(() => {
         this.setState({
           loading: false,
@@ -35,8 +50,12 @@ class MusicCard extends React.Component {
     });
   };
 
+  checkFavorite(event) {
+    const { savedFavoritesSongs } = this.state;
+  }
+
   render() {
-    const { loading } = this.state;
+    const { loading, isChecked } = this.state;
     const { musics } = this.props;
     const { trackId } = musics;
     return (
@@ -50,9 +69,10 @@ class MusicCard extends React.Component {
         >
           Favorita
           <input
-            onClick={ this.musicsApi }
+            onChange={ this.musicsApi }
             id={ `checkbox-music-${trackId}` }
             type="checkbox"
+            checked={ isChecked }
           />
         </label>
       </>
